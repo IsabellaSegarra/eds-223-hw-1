@@ -8,13 +8,25 @@ execute:
   warning: false
 ---
 
+
+
 # Exploring Environmental Injustice
 
 ### Objective
-Utilize the U.S. Environmental Protection Agency's EJ Screen data to produce two maps communicating an environmental justice issue. 
+Utilize the U.S. Environmental Protection Agency's EJ Screen data to produce two
 
+-   build effective, responsible, accessible and aesthetically-pleasing maps
+-   practice manipulating vector and raster data to build multi-layer maps
+-   practice making maps in R, specifically using tmap
+
+In this assignment, I explored an environmental justice issue of my choosing and produced the following:
+
+-   create two maps that communicate an environmental justice issue
+-   write a brief paragraph explaining what your maps communicate
 
 ### Environment Set-up 
+
+
 ```{r}
 
 #| warning: false  
@@ -36,7 +48,11 @@ library(dplyr)
 # install.packages("stars")
 # install.packages("tmap")
 ```
+
+
 ### Load in data
+
+
 ```{r}
 
 #| warning: false  
@@ -57,7 +73,11 @@ california_border <- sf::st_read(here::here("data", "ca_state", "CA_State.shp"))
 
 ```
 
+
+
 ### Filter Data 
+
+
 ```{r}
 #| warning: false  
 #| message: false
@@ -125,9 +145,13 @@ central_boundaries <- california_boundaries %>%
 ```
 
 
+
+
 ### Map 1: Mapping Central Valley Diesel Particulate Matter
 
 In the Central Valley, diesel pollution, primarily from heavy diesel trucks traveling throughout Highway 99 and the I-5, contribute to the region's significant air pollution (EPA, 2025). I decided to investigate which counties in the Central Valley see higher concentrations of diesel pollution. From the map, southern Central Valley counties experience higher levels of pollution. 
+
+
 
 ```{r}
 
@@ -154,11 +178,15 @@ tm_shape(central_boundaries) + # Add county names
 
 ```
 
+
+
 ### Map 2: Mapping Central Valley Ozone 
 
 Talk about the relation between ozone and diesel 
 
 Diesel pollution is linked to increased ozone production (EPA, 2025). Increased ozone in the atmosphere impacts the health of the ecosystem and surrounding communities. Due to this linkage, I decided to map the ozone (ppb) levels in Central Valley counties. From the map, southern Central Valley counties have increased ozone levels showing a possible connection between diesel and ozone. 
+
+
 
 ```{r}
 
