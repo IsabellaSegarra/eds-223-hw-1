@@ -1,0 +1,189 @@
+---
+title: "ej_screen"
+format: html
+execute: 
+  warning: false
+---
+
+# Exploring Environmental Injustice
+
+## Learning Outcomes:
+
+-   build effective, responsible, accessible and aesthetically-pleasing maps
+-   practice manipulating vector and raster data to build multi-layer maps
+-   practice making maps in R, specifically using tmap
+
+In this assignment, I explored an environmental justice issue of my choosing and produced the following:
+
+-   create two maps that communicate an environmental justice issue
+-   write a brief paragraph explaining what your maps communicate
+
+### Environment Set-up 
+```{r}
+
+#| warning: false  
+#| message: false
+
+
+# Load relevant libraries
+library(sf) # for vector data
+library(stars) # for raster data 
+library(tmap) # for static and interactive maps
+library(here)
+library(ARTofR)
+library(tidyverse)
+library(dplyr)
+
+
+# If the libraries are not installed, please install the below packages. 
+
+# install.packages("sf")
+# install.packages("stars")
+# install.packages("tmap")
+```
+### Load in data
+```{r}
+
+#| warning: false  
+#| message: false
+
+
+# Read in geodatabase of EJScreen data at the Census Block Group level
+
+ejscreen <- sf::st_read(here::here("data", "ejscreen","EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"))
+
+# Read in California boundaries
+
+california_boundaries <- sf::st_read(here::here("data", "county_boundaries", "California_County_Boundaries_and_Identifiers.shp"))
+
+# Read in California border 
+
+california_border <- sf::st_read(here::here("data", "ca_state", "CA_State.shp"))
+
+```
+
+### Filter Data 
+```{r}
+#| warning: false  
+#| message: false
+#| echo: false 
+
+# Filter to all data from California 
+california <- ejscreen %>%
+  dplyr::filter(ST_ABBREV == "CA") %>% 
+  janitor::clean_names()
+
+
+# Filter to counties in the Central Valley 
+
+central_valley <- california %>%
+  dplyr::filter(cnty_name %in% c("Merced County", 
+                                 "Butte County",
+                                 "Kern County",
+                                 "Colusa County", 
+                                 "Kings County", 
+                                 "Fresno County", 
+                                 "Madera County", 
+                                 "Glenn County", 
+                                 "Placer County", 
+                                 "Sacramento County",
+                                 "San Joaquin County", 
+                                 "Shasta County", 
+                                 "Sutter County", 
+                                 "Tehama County", 
+                                 "Tulare County", 
+                                 "Yolo County", 
+                                 "Yuba County", 
+                                 "Stanislaus County"))
+
+# find the average values for all variables within counties
+central_valley_counties <- aggregate(central_valley, by = list(central_valley$cnty_name), FUN = mean)
+
+california_agg <- aggregate(california, by = list(california$cnty_name), FUN = mean)
+
+# Filter to only Merced county
+
+merced_county <- central_valley %>% filter(cnty_name %in%  c("Merced County"))
+
+# Filter california_boundaries for only Central Valley counties 
+
+central_boundaries <- california_boundaries %>%
+  dplyr::filter(CDTFA_COUN %in% c("Merced County", 
+                                  "Butte County", 
+                                  "Kern County",
+                                  "Colusa County", 
+                                  "Kings County", 
+                                  "Fresno County", 
+                                  "Madera County", 
+                                 "Glenn County", 
+                                 "Placer County", 
+                                 "Sacramento County", 
+                                 "San Joaquin County", 
+                                 "Shasta County", 
+                                 "Sutter County", 
+                                 "Tehama County", 
+                                 "Tulare County", 
+                                 "Yolo County", 
+                                 "Yuba County", 
+                                 "Stanislaus County"))
+
+```
+
+
+### Map 1: Mapping Central Valley Diesel Particulate Matter
+
+In the Central Valley, diesel pollution, primarily from heavy diesel trucks traveling throughout Highway 99 and the I-5, contribute to the region's significant air pollution (EPA, 2025). I decided to investigate which counties in the Central Valley see higher concentrations of diesel pollution. From the map, southern Central Valley counties experience higher levels of pollution. 
+
+```{r}
+
+tm_shape(california_border) + # Add border of California
+  tm_borders(fill = "#c4bd8b") +
+tm_shape(central_valley_counties) + # Add the central valley counties layer 
+  tm_polygons(fill = "dslpm", # Fill the counties based on diesel pollution
+              fill.scale = tm_scale(values = c("#ffc100","#ff7400", "#ff0000", "darkred")),
+              fill.legend = tm_legend(title = 
+                                        "Diesel Particulate Matter (μg/m3)", 
+                                      size = 0.5)) +
+  tm_borders(col = "black") + # Add borders for the counties 
+  tm_title("Diesel Pollution in Central Valley Counties of California", 
+           size = 2) +
+  tm_title("Based on EPA’s AirToxScreen", size = 0.5)+
+tm_shape(central_boundaries) + # Add county names 
+  tm_dots() +
+  tm_text("CDTFA_COUN",
+          size = 0.5, 
+          xmod = 1,  # Shift labels to the right
+    ymod = 1 ) + 
+  tm_compass(position = c("right", "top")) 
+  
+
+```
+
+### Map 2: Mapping Central Valley Ozone 
+
+Talk about the relation between ozone and diesel 
+
+Diesel pollution is linked to increased ozone production (EPA, 2025). Increased ozone in the atmosphere impacts the health of the ecosystem and surrounding communities. Due to this linkage, I decided to map the ozone (ppb) levels in Central Valley counties. From the map, southern Central Valley counties have increased ozone levels showing a possible connection between diesel and ozone. 
+
+```{r}
+
+tm_shape(california_border) + # Add border of California
+  tm_borders(fill = "#c4bd8b") +
+tm_shape(central_valley_counties) + # Add the central valley counties layer 
+  tm_polygons(fill = "ozone", # Fill the counties based on ozone pollution
+              fill.scale = tm_scale(values = c("#00FFFFFF","#FF00FFFF", "#0000FFFF")),
+              fill.legend = tm_legend(title = 
+                                        "Ozone (parts per billion)", 
+                                      size = 0.5)) +
+  tm_borders(col = "black") + # Add borders
+  tm_title("Ozone Pollution in Central Valley Counties of California", 
+           size = 2) +
+  tm_title("Ozone annual mean top 10 of daily maximum 8-hour concentration in air. EJScreen v2.2", size = 0.5) +
+tm_shape(central_boundaries) +
+  tm_dots() +
+  tm_text("CDTFA_COUN",
+          size = 0.5) +
+  tm_compass(position = c("right", "top"))
+
+```
+
