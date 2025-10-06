@@ -24,10 +24,10 @@ Utilize the U.S. Environmental Protection Agency's EJ Screen data to produce two
 # Load relevant libraries
 library(sf) # For vector data
 library(stars) # For raster data 
-library(tmap) # for static and interactive maps
-library(here) 
-library(tidyverse)
-library(dplyr)
+library(tmap) # For static and interactive maps
+library(here) # For importing data 
+library(tidyverse) # For data cleaning
+library(dplyr) # For filtering data 
 
 
 # If the libraries are not installed, please install the below packages. 
@@ -35,6 +35,10 @@ library(dplyr)
 # install.packages("sf")
 # install.packages("stars")
 # install.packages("tmap")
+# install.packages("here")
+# install.packages("tidyverse")
+# install.packages("dplyr")
+
 ```
 ### Load in data
 ```{r}
@@ -54,6 +58,10 @@ california_boundaries <- sf::st_read(here::here("data", "county_boundaries", "Ca
 # Read in California border 
 
 california_border <- sf::st_read(here::here("data", "ca_state", "CA_State.shp"))
+
+# Read in California cities
+
+california_cities <- sf::st_read(here::here("data", "California_Cities-shp", "d86f1c7b-1acd-4a0a-9413-ded642940daf202042-1-425xni.o5rsz.shp"))
 
 ```
 
@@ -115,7 +123,11 @@ central_boundaries <- california_boundaries %>%
                                  "Yolo County", 
                                  "Yuba County", 
                                  "Stanislaus County"))
+# Filter california_cities to specific central valley cities (Sacramento, Fresno, Bakersfield, Stockton)
 
+central_valley_cities <- california_cities %>% 
+  dplyr::filter(AREANAME %in% c("Sacramento", "Fresno", "Bakersfield", "Stockton"))
+  
 ```
 
 
@@ -133,16 +145,18 @@ tm_shape(central_valley_counties) + # Add the central valley counties layer
               fill.legend = tm_legend(title = 
                                         "Diesel Particulate Matter (μg/m3)", 
                                       size = 0.5)) +
-  tm_borders(col = "black") + # Add borders for the counties 
+  tm_borders(col = "black", lwd = 0.5 ) + # Add borders for the counties 
   tm_title("Diesel Pollution in Central Valley Counties of California", 
-           size = 3) +
+           size = 1, 
+           fontface = "bold") +
   tm_title("Based on EPA’s AirToxScreen", size = 0.5)+
-tm_shape(central_boundaries) + # Add county names 
-  tm_dots(alpha = 0.5) +
-  tm_text("CDTFA_COUN",
+tm_shape(central_valley_cities) + # Add central valley city names 
+  tm_dots(fill = "white") +
+  tm_text("AREANAME",
+          col = "white",
           size = 0.5, 
-          xmod = 1,  # Shift labels to the right
-    ymod = 1 ) + 
+          xmod = 2.2,  # Shift labels to the right
+    ymod = 0 ) + 
   tm_compass(position = c("right", "top")) 
   
 diesel_map # View diesel map
@@ -150,9 +164,7 @@ diesel_map # View diesel map
 
 ### Map 2: Mapping Central Valley Ozone 
 
-Talk about the relation between ozone and diesel 
-
-Diesel pollution is linked to increased ozone production (EPA, 2025). Increased ozone in the atmosphere impacts the health of the ecosystem and surrounding communities. Due to this linkage, I decided to map the ozone (ppb) levels in Central Valley counties. From the map, southern Central Valley counties have increased ozone levels showing a possible connection between diesel and ozone. 
+Diesel pollution is linked to increased ozone production (EPA, 2025). Increased ozone in the atmosphere impacts the health of the ecosystem and surrounding communities. Due to this linkage, I decided to map the ozone (ppb) levels in Central Valley counties. From the map, southern Central Valley counties have increased ozone levels showing a possible connection between diesel and ozone pollution. 
 
 ```{r}
 
@@ -164,16 +176,18 @@ tm_shape(central_valley_counties) + # Add the central valley counties layer
               fill.legend = tm_legend(title = 
                                         "Ozone (parts per billion)", 
                                       size = 0.5)) +
-  tm_borders(col = "black") + # Add borders
+  tm_borders(col = "black", lwd = 0.5 ) + # Add borders for the counties 
   tm_title("Ozone Pollution in Central Valley Counties of California", 
-           size = 2) +
+           size = 2, 
+           fontface = "bold") +
   tm_title("Ozone annual mean top 10 of daily maximum 8-hour concentration in air. EJScreen v2.2", size = 0.5) +
-tm_shape(central_boundaries) +
-  tm_dots(alpha = 0.5 ) +
-  tm_text("CDTFA_COUN",
+tm_shape(central_valley_cities) + # Add central valley city names 
+  tm_dots(fill = "white") +
+  tm_text("AREANAME",
+          col = "white",
           size = 0.5, 
-          xmod = 1,  # Shift labels to the right
-    ymod = 1 ) +
+          xmod = 2.22,  # Shift labels to the right
+    ymod = 0 ) + 
   tm_compass(position = c("right", "top"))
 
 ozone_map # View ozone map
