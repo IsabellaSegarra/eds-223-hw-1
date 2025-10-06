@@ -1,10 +1,7 @@
----
-editor_options: 
-  markdown: 
-    wrap: 72
----
 
 # Exploring an Environmental Justice Issue: Diesel and Ozone Pollution in California's Central Valley
+
+![](figs/Flowchart.png)
 
 ## Contributor:
 
