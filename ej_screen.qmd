@@ -91,16 +91,10 @@ central_valley <- california %>%
                                  "Yuba County", 
                                  "Stanislaus County"))
 
-# find the average values for all variables within counties
+# Find the average values for all variables within counties
 central_valley_counties <- aggregate(central_valley, by = list(central_valley$cnty_name), FUN = mean)
 
-california_agg <- aggregate(california, by = list(california$cnty_name), FUN = mean)
-
-# Filter to only Merced county
-
-merced_county <- central_valley %>% filter(cnty_name %in%  c("Merced County"))
-
-# Filter california_boundaries for only Central Valley counties 
+# Filter California_boundaries for only Central Valley counties 
 
 central_boundaries <- california_boundaries %>%
   dplyr::filter(CDTFA_COUN %in% c("Merced County", 
@@ -131,7 +125,7 @@ In the Central Valley, diesel pollution, primarily from heavy diesel trucks trav
 
 ```{r}
 
-tm_shape(california_border) + # Add border of California
+diesel_map <- tm_shape(california_border) + # Add border of California
   tm_borders(fill = "#c4bd8b") +
 tm_shape(central_valley_counties) + # Add the central valley counties layer 
   tm_polygons(fill = "dslpm", # Fill the counties based on diesel pollution
@@ -141,17 +135,17 @@ tm_shape(central_valley_counties) + # Add the central valley counties layer
                                       size = 0.5)) +
   tm_borders(col = "black") + # Add borders for the counties 
   tm_title("Diesel Pollution in Central Valley Counties of California", 
-           size = 2) +
+           size = 3) +
   tm_title("Based on EPA’s AirToxScreen", size = 0.5)+
 tm_shape(central_boundaries) + # Add county names 
-  tm_dots() +
+  tm_dots(alpha = 0.5) +
   tm_text("CDTFA_COUN",
           size = 0.5, 
           xmod = 1,  # Shift labels to the right
     ymod = 1 ) + 
   tm_compass(position = c("right", "top")) 
   
-
+diesel_map # View diesel map
 ```
 
 ### Map 2: Mapping Central Valley Ozone 
@@ -162,11 +156,11 @@ Diesel pollution is linked to increased ozone production (EPA, 2025). Increased 
 
 ```{r}
 
-tm_shape(california_border) + # Add border of California
+ozone_map <- tm_shape(california_border) + # Add border of California
   tm_borders(fill = "#c4bd8b") +
 tm_shape(central_valley_counties) + # Add the central valley counties layer 
   tm_polygons(fill = "ozone", # Fill the counties based on ozone pollution
-              fill.scale = tm_scale(values = c("#00FFFFFF","#FF00FFFF", "#0000FFFF")),
+              fill.scale = tm_scale(values = c("#C0C6CB","#7688BB", "#304FAF", "#073763")),
               fill.legend = tm_legend(title = 
                                         "Ozone (parts per billion)", 
                                       size = 0.5)) +
@@ -175,10 +169,14 @@ tm_shape(central_valley_counties) + # Add the central valley counties layer
            size = 2) +
   tm_title("Ozone annual mean top 10 of daily maximum 8-hour concentration in air. EJScreen v2.2", size = 0.5) +
 tm_shape(central_boundaries) +
-  tm_dots() +
+  tm_dots(alpha = 0.5 ) +
   tm_text("CDTFA_COUN",
-          size = 0.5) +
+          size = 0.5, 
+          xmod = 1,  # Shift labels to the right
+    ymod = 1 ) +
   tm_compass(position = c("right", "top"))
+
+ozone_map # View ozone map
 
 ```
 
