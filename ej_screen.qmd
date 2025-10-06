@@ -6,6 +6,8 @@ format: html
 theme: pandoc
 execute: 
   warning: false
+   message: false
+   include: false
 ---
 
 # Exploring Environmental Injustice
@@ -45,6 +47,7 @@ library(dplyr) # For filtering data
 
 #| warning: false  
 #| message: false
+#| include: false
 
 
 # Read in geodatabase of EJScreen data at the Census Block Group level
@@ -123,6 +126,7 @@ central_boundaries <- california_boundaries %>%
                                  "Yolo County", 
                                  "Yuba County", 
                                  "Stanislaus County"))
+
 # Filter california_cities to specific central valley cities (Sacramento, Fresno, Bakersfield, Stockton)
 
 central_valley_cities <- california_cities %>% 
