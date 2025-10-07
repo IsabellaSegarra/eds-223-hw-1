@@ -2,15 +2,16 @@
 title: "EDS-223 Homework Assignment #1"
 author: "Isabella Segarra"
 date: 10-06-2025
-format: html
+format: 
+  pdf: default 
+  html: default
 theme: pandoc
 execute: 
   warning: false
-   message: false
-   include: false
+  message: false
 ---
 
-# Exploring Environmental Injustice
+# Exploring an Environmental Justice Issue
 
 ### Objective
 Utilize the U.S. Environmental Protection Agency's EJ Screen data to produce two maps communicating an environmental justice issue. 
@@ -18,10 +19,6 @@ Utilize the U.S. Environmental Protection Agency's EJ Screen data to produce two
 
 ### Environment Set-up 
 ```{r}
-
-#| warning: false  
-#| message: false
-
 
 # Load relevant libraries
 library(sf) # For vector data
@@ -32,7 +29,7 @@ library(tidyverse) # For data cleaning
 library(dplyr) # For filtering data 
 
 
-# If the libraries are not installed, please install the below packages. 
+# If the libraries are not installed, please install the below packages: 
 
 # install.packages("sf")
 # install.packages("stars")
@@ -45,18 +42,10 @@ library(dplyr) # For filtering data
 ### Load in data
 ```{r}
 
-#| warning: false  
-#| message: false
-#| include: false
-
-
 # Read in geodatabase of EJScreen data at the Census Block Group level
 
 ejscreen <- sf::st_read(here::here("data", "ejscreen","EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb"))
 
-# Read in California boundaries
-
-california_boundaries <- sf::st_read(here::here("data", "county_boundaries", "California_County_Boundaries_and_Identifiers.shp"))
 
 # Read in California border 
 
@@ -70,9 +59,6 @@ california_cities <- sf::st_read(here::here("data", "California_Cities-shp", "d8
 
 ### Filter Data 
 ```{r}
-#| warning: false  
-#| message: false
-#| echo: false 
 
 # Filter to all data from California 
 california <- ejscreen %>%
@@ -105,29 +91,7 @@ central_valley <- california %>%
 # Find the average values for all variables within counties
 central_valley_counties <- aggregate(central_valley, by = list(central_valley$cnty_name), FUN = mean)
 
-# Filter California_boundaries for only Central Valley counties 
-
-central_boundaries <- california_boundaries %>%
-  dplyr::filter(CDTFA_COUN %in% c("Merced County", 
-                                  "Butte County", 
-                                  "Kern County",
-                                  "Colusa County", 
-                                  "Kings County", 
-                                  "Fresno County", 
-                                  "Madera County", 
-                                 "Glenn County", 
-                                 "Placer County", 
-                                 "Sacramento County", 
-                                 "San Joaquin County", 
-                                 "Shasta County", 
-                                 "Sutter County", 
-                                 "Tehama County", 
-                                 "Tulare County", 
-                                 "Yolo County", 
-                                 "Yuba County", 
-                                 "Stanislaus County"))
-
-# Filter california_cities to specific central valley cities (Sacramento, Fresno, Bakersfield, Stockton)
+# Filter california_cities to major central valley cities (Sacramento, Fresno, Bakersfield, and Stockton)
 
 central_valley_cities <- california_cities %>% 
   dplyr::filter(AREANAME %in% c("Sacramento", "Fresno", "Bakersfield", "Stockton"))
@@ -140,12 +104,11 @@ central_valley_cities <- california_cities %>%
 In the Central Valley, diesel pollution, primarily from heavy diesel trucks traveling throughout Highway 99 and the I-5, contribute to the region's significant air pollution (EPA, 2025). I decided to investigate which counties in the Central Valley see higher concentrations of diesel pollution. From the map, southern Central Valley counties experience higher levels of pollution. 
 
 ```{r}
-
 diesel_map <- tm_shape(california_border) + # Add border of California
   tm_borders(fill = "#c4bd8b") +
 tm_shape(central_valley_counties) + # Add the central valley counties layer 
   tm_polygons(fill = "dslpm", # Fill the counties based on diesel pollution
-              fill.scale = tm_scale(values = c("#ffc100","#ff7400", "#ff0000", "darkred")),
+              fill.scale = tm_scale(values = c("#ECAD09","#D97F12", "#C5501A", "#B22222")),
               fill.legend = tm_legend(title = 
                                         "Diesel Particulate Matter (μg/m3)", 
                                       size = 0.5)) +
@@ -159,13 +122,12 @@ tm_shape(central_valley_cities) + # Add central valley city names
   tm_text("AREANAME",
           col = "white",
           size = 0.5, 
-          xmod = 2.2,  # Shift labels to the right
-    ymod = 0 ) + 
-  tm_compass(position = c("right", "top")) 
-  
+          xmod = 2.3,  # Shift labels to the right
+    ymod = 0.1 ) +  # Shift labels up/down
+  tm_compass(position = c("right", "top"))
+
 diesel_map # View diesel map
 ```
-
 ### Map 2: Mapping Central Valley Ozone 
 
 Diesel pollution is linked to increased ozone production (EPA, 2025). Increased ozone in the atmosphere impacts the health of the ecosystem and surrounding communities. Due to this linkage, I decided to map the ozone (ppb) levels in Central Valley counties. From the map, southern Central Valley counties have increased ozone levels showing a possible connection between diesel and ozone pollution. 
@@ -182,7 +144,7 @@ tm_shape(central_valley_counties) + # Add the central valley counties layer
                                       size = 0.5)) +
   tm_borders(col = "black", lwd = 0.5 ) + # Add borders for the counties 
   tm_title("Ozone Pollution in Central Valley Counties of California", 
-           size = 2, 
+           size = 1, 
            fontface = "bold") +
   tm_title("Ozone annual mean top 10 of daily maximum 8-hour concentration in air. EJScreen v2.2", size = 0.5) +
 tm_shape(central_valley_cities) + # Add central valley city names 
@@ -190,8 +152,8 @@ tm_shape(central_valley_cities) + # Add central valley city names
   tm_text("AREANAME",
           col = "white",
           size = 0.5, 
-          xmod = 2.22,  # Shift labels to the right
-    ymod = 0 ) + 
+          xmod = 2.3,  # Shift labels to the right
+    ymod = 0.1 ) +  # Shift labels up/down
   tm_compass(position = c("right", "top"))
 
 ozone_map # View ozone map

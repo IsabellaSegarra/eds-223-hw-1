@@ -1,8 +1,6 @@
 
 # Exploring an Environmental Justice Issue: Diesel and Ozone Pollution in California's Central Valley
 
-![](figs/Flowchart.png)
-
 ## Contributor:
 
 Isabella Segarra (Masters of Environmental Data Science, UC Santa
@@ -24,8 +22,7 @@ PDF](link)
   - Column descriptions: EJSCREEN_2023_BG_Columns.xlsx 
   - Mapping layers:EJSCREEN-2023_BG_StatePct_with_AS_CNMI_GU_VI.gbd 
 - ca_state: Files for mapping California state boundary. I used '/CA_State.shp'.
-- county_boundaries: Files for mapping California county boundaries. I
-used '/California_County_boundaries_and_Identifiers.shp'.
+- California_Cities-shp: Files for mapping California city names. I used '/d86f1c7b-1acd-4a0a-9413-ded642940daf202042-1-425xni.o5rsz.shp'. 
 
 ## How to access the data:
 
