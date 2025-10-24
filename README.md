@@ -15,7 +15,7 @@ It contains the following file structure:
 document](https://github.com/IsabellaSegarra/eds-223-hw-1/blob/f5bfff77f71c3dc81526d8b009e64002b65a18bf/ej_screen.qmd):
 Contains the rendered maps as an HTML. 
 - [Environemntal Justice
-PDF](link) 
+PDF](https://github.com/IsabellaSegarra/environmental-injustice/blob/111dff81c918ee6bfeadb9600523c2b47438317e/ej_screen.pdf) 
 - Data: Contains the following folders: 
 - ejscreen:
   - Technical documentation/Metadata: ejscreen-tech-doc-version-2-2.pdf 
