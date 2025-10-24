@@ -45,3 +45,5 @@ The data is from the United States Environmental Protection Agency's
 
 ## Citations: 
 United States Environmental Protection Agency. 2015. EJSCREEN. Retrieved: 10-6-2025, from www.epa.gov/ejscreen.
+
+U.S. Environmental Protection Agency. 2025. Learn About Impacts of Diesel Exhaust and the Diesel Emissions Reduction Act. Retrieved October 6, 2025, from https://www.epa.gov/dera/learn-about-impacts-diesel-exhaust-and-diesel-emissions-reduction. 
